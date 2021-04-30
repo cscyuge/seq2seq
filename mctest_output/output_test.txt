@@ -1,0 +1,56 @@
+***** Eval results Epoch  2021-04-30 17:36:32 *****	
+[('data_dir', './data'), ('bert_model', 'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext'), ('output_dir', 'mctest_output'), ('output_file', 'output_test.txt'), ('max_seq_length', 64), ('batch_size', 12), ('num_choices', 8), ('learning_rate', 5e-05), ('dcmn_learning_rate', 1e-05), ('num_train_epochs', 30.0), ('model_name', 'output_test.bin'), ('gradient_accumulation_steps', 1), ('warmup_proportion', 0.03), ('dcmn_warmup_proportion', 0.1), ('no_cuda', False), ('seed', 42), ('optimize_on_cpu', False), ('loss_scale', 4), ('dcmn_device', device(type='cuda', index=0)), ('seq_device', device(type='cuda', index=1)), ('tokenizer', PreTrainedTokenizer(name_or_path='microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext', vocab_size=30522, model_max_len=1000000000000000019884624838656, is_fast=False, padding_side='right', special_tokens={'unk_token': '[UNK]', 'sep_token': '[SEP]', 'pad_token': '[PAD]', 'cls_token': '[CLS]', 'mask_token': '[MASK]'})), ('t_total', 0), ('hidden_size', 768)]	
+	
+***** Eval results Epoch 0  2021-04-30 17:52:34 *****	
+ASCORE = 0.6461149360664927	BLUE = 0.690014046660849	COMMON = 0.7601275123217419	HIT = 0.5476635733033361	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.982765285741898e-05, 4.982765285741898e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 6.590143598790692		
+	
+***** Eval results Epoch 1  2021-04-30 18:06:31 *****	
+ASCORE = 0.6488652146621764	BLUE = 0.6925836532071742	COMMON = 0.7618925781802593	HIT = 0.5507475628046486	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.810901359448489e-05, 4.810901359448489e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 5.382804731174172		
+	
+***** Eval results Epoch 2  2021-04-30 18:20:25 *****	
+ASCORE = 0.6718063162232419	BLUE = 0.7093572129470245	COMMON = 0.7631887442834809	HIT = 0.5855408698912626	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.6390374331550804e-05, 4.6390374331550804e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 4.5294435238771165		
+	
+***** Eval results Epoch 3  2021-04-30 18:34:19 *****	
+ASCORE = 0.6887825373361415	BLUE = 0.7200929571789616	COMMON = 0.7590533972061082	HIT = 0.6158394263217088	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.467173506861671e-05, 4.467173506861671e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 3.7971764057735027		
+	
+***** Eval results Epoch 4  2021-04-30 18:48:15 *****	
+ASCORE = 0.7094292913355359	BLUE = 0.7376221634729805	COMMON = 0.7532907359941228	HIT = 0.6485751781027361	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.295309580568262e-05, 4.295309580568262e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 3.1925040119255157		
+	
+***** Eval results Epoch 5  2021-04-30 19:02:10 *****	
+ASCORE = 0.7243618058492333	BLUE = 0.7455333556057538	COMMON = 0.74172536174787	HIT = 0.6827873078365193	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [4.123445654274854e-05, 4.123445654274854e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 2.635043649217629		
+	
+***** Eval results Epoch 6  2021-04-30 19:16:08 *****	
+ASCORE = 0.7373502489771385	BLUE = 0.7526290769594147	COMMON = 0.7374873545147876	HIT = 0.7116094863142096	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.9515817279814446e-05, 3.9515817279814446e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 2.103001124298003		
+	
+***** Eval results Epoch 7  2021-04-30 19:30:02 *****	
+ASCORE = 0.7451266601400536	BLUE = 0.7557432182104741	COMMON = 0.7318436225938224	HIT = 0.7327380952380941	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.7797178016880355e-05, 3.7797178016880355e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 1.6876827844862863		
+	
+***** Eval results Epoch 8  2021-04-30 19:43:58 *****	
+ASCORE = 0.7466083326058768	BLUE = 0.7593992401857077	COMMON = 0.7301266569376512	HIT = 0.7320327146606663	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.607853875394627e-05, 3.607853875394627e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 1.401023928484519		
+	
+***** Eval results Epoch 9  2021-04-30 19:57:53 *****	
+ASCORE = 0.7553867215698792	BLUE = 0.7664395503161493	COMMON = 0.7269081586053324	HIT = 0.7492243157105349	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.435989949101218e-05, 3.435989949101218e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 1.2108255218655122		
+	
+***** Eval results Epoch 10  2021-04-30 20:11:49 *****	
+ASCORE = 0.7594258926552856	BLUE = 0.769642322940665	COMMON = 0.7256470210913736	HIT = 0.7572225346831634	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.2641260228078094e-05, 3.2641260228078094e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 1.025674917173922		
+	
+***** Eval results Epoch 11  2021-04-30 20:25:44 *****	
+ASCORE = 0.7616450068900379	BLUE = 0.7730978598845825	COMMON = 0.7239073741697855	HIT = 0.7592402512185964	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [3.0922620965144e-05, 3.0922620965144e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.9094957759308837		
+	
+***** Eval results Epoch 12  2021-04-30 20:39:41 *****	
+ASCORE = 0.7664783765978838	BLUE = 0.7780218626372153	COMMON = 0.7232827182415861	HIT = 0.7666057367829009	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.920398170220991e-05, 2.920398170220991e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.7727061162904366		
+	
+***** Eval results Epoch 13  2021-04-30 20:53:39 *****	
+ASCORE = 0.7667724963857705	BLUE = 0.779330559586867	COMMON = 0.7228031976655703	HIT = 0.7655394638170215	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.7485342439275817e-05, 2.7485342439275817e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.6763148545771976		
+	
+***** Eval results Epoch 14  2021-04-30 21:07:35 *****	
+ASCORE = 0.7685066288124689	BLUE = 0.7815636075336987	COMMON = 0.7221869970483817	HIT = 0.7675899887514049	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.5766703176341733e-05, 2.5766703176341733e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.6089555533583632		
+	
+***** Eval results Epoch 15  2021-04-30 21:21:26 *****	
+ASCORE = 0.7669789662170232	BLUE = 0.777942651398002	COMMON = 0.722201774814189	HIT = 0.76890232470941	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.404806391340764e-05, 2.404806391340764e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.5403839769758347		
+	
+***** Eval results Epoch 16  2021-04-30 21:35:18 *****	
+ASCORE = 0.7693147506585968	BLUE = 0.782150151051731	COMMON = 0.7217684752447355	HIT = 0.769394450693662	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.2329424650473554e-05, 2.2329424650473554e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.47976139478992946		
+	
+***** Eval results Epoch 17  2021-04-30 21:49:09 *****	
+ASCORE = 0.7687767087779078	BLUE = 0.780767994409081	COMMON = 0.7221400830534843	HIT = 0.7698537682789639	best_accuracy = 0.7005758157389635	dcmn_lr_now = [0.0, 0.0]	eval_accuracy = 0.7005758157389635	eval_loss = 0.9114798246457297	global_step = 0	seq_lr_now = [2.0610785387539462e-05, 2.0610785387539462e-05]	tr_dcmn_loss = 0.5985707813596188	tr_seq_loss = 0.4199399487119807		
