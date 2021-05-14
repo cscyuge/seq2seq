@@ -4,6 +4,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import random
 import numpy as np
+from utils import decode_sentence
 
 PAD, CLS = '[PAD]', '[CLS]'
 SEP = '[SEP]'
@@ -229,7 +230,7 @@ class DecoderRNN(BaseRNN):
 
         decoder_hidden = self._init_state(encoder_hidden)
 
-        use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
+        use_teacher_forcing = False
 
         decoder_outputs = []
         sequence_symbols = []
@@ -280,7 +281,6 @@ class DecoderRNN(BaseRNN):
                                                                           encoder_outputs,
                                                                           function=function)
             decoder_output_pre = None
-            step_attn_pre = None
             sid = 1
             generation_state = False
             # 小于最大长度且没有生成终结符就继续
@@ -289,12 +289,7 @@ class DecoderRNN(BaseRNN):
                     generation_state = not generation_state
 
                 if not generation_state:
-                    if inputs[0][sid] == 4:
-                        decoder_input = decode(0, decoder_output_pre[:, 0, :], step_attn_pre)
-                    else:
-                        decoder_input = inputs[:, sid].unsqueeze(1)
-                    decoder_output_pre = decoder_output.clone()
-                    step_attn_pre = step_attn.clone()
+                    decoder_input = inputs[:, sid].unsqueeze(1)
                     decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                   encoder_outputs,
                                                                                   function=function)
@@ -302,31 +297,37 @@ class DecoderRNN(BaseRNN):
                         sequence_symbols.append(decoder_input)
                     sid += 1
                 else:
-                    if decoder_output_pre is None:
-                        step_output = decoder_output[:, 0, :]
-                    else:
-                        step_output = decoder_output_pre[:, 0, :]
-                        step_attn = step_attn_pre
-
+                    decoder_input = inputs[:, sid].unsqueeze(1)
+                    sequence_symbols.append(decoder_input)
+                    decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
+                                                                                  encoder_outputs,
+                                                                                  function=function)
+                    step_output = decoder_output.squeeze(1)
                     symbols = decode(0, step_output, step_attn)
-
+                    sequence_symbols.append(symbols)
                     decoder_input = symbols
                     di = 1
-                    while di<=2 or (di < 20 and symbols[0][0] != 4):
-                        decoder_output_pre = decoder_output.clone()
-                        step_attn_pre = step_attn.clone()
+                    while di==1 or (di < 20 and symbols[0][0] != 4):
                         decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                       encoder_outputs,
                                                                                       function=function)
                         step_output = decoder_output.squeeze(1)
                         symbols = decode(di, step_output, step_attn)
-                        if symbols[0][0] != 4:
-                            sequence_symbols.append(symbols)
+                        sequence_symbols.append(symbols)
                         decoder_input = symbols
                         di += 1
+                    if di == 20:
+                        sequence_symbols.append(torch.LongTensor([[4]]).to(torch.device('cuda:1')))
                     sid += 1
                     while sid < inputs.shape[1] and inputs[0, sid] != 4:
                         sid += 1
+
+            #symbols = sequence_symbols
+            #symbols = torch.cat(symbols, 1).data.cpu().numpy()
+            #result_temp = decode_sentence(symbols, config)
+            #if result_temp[0:10] == ' however ,':
+            #    print('here')
+            #print(result_temp)
 
 
         ret_dict[DecoderRNN.KEY_SEQUENCE] = sequence_symbols

@@ -18,9 +18,12 @@ def main():
     dcmn = BertForMultipleChoiceWithMatch.from_pretrained(config.bert_model, num_choices=config.num_choices)
     dcmn.to(config.dcmn_device)
 
-    save_file_best = torch.load('./cache/best_save.data', map_location=torch.device('cuda:2'))
+    save_file_best = torch.load('./backup/bert/best_save.data', map_location=torch.device('cuda:2'))
+    # dcmn.load_state_dict(save_file_best['dcmn_para'])
+    seq2seq.load_state_dict(save_file_best['para'])
+
+    save_file_best = torch.load('./backup/dcmn/best_save.data', map_location=torch.device('cuda:2'))
     dcmn.load_state_dict(save_file_best['dcmn_para'])
-    seq2seq.load_state_dict(save_file_best['seq_para'])
 
     dcmn.eval()
     seq2seq.eval()
@@ -63,7 +66,7 @@ def main():
 
     sentences = []
     for words in results:
-        # words = words.replace('[MASK] ', '')
+        words = words.replace('[MASK] ', '')
         words = words.replace(' - ', '-').replace(' . ', '.').replace(' / ', '/')
         sentences.append(words.strip())
 
