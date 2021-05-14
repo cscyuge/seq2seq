@@ -25,6 +25,14 @@ def main():
     dcmn.eval()
     seq2seq.eval()
 
+    # src = 'a'
+    # src_ids, src_masks = seq_tokenize([src], config)
+    # decoder_outputs, decoder_hidden, ret_dict = seq2seq([src_ids, src_masks], src_ids, 0.0, False)
+    # symbols = ret_dict['sequence']
+    # symbols = torch.cat(symbols, 1).data.cpu().numpy()
+    # results = decode_sentence(symbols, config)
+    # print(results)
+
     results = []
     seq_srcs_all = []
     for step, (seq_batches, dcmn_batches) in enumerate(tqdm(eval_dataloader, desc="Evaluating")):
@@ -55,7 +63,7 @@ def main():
 
     sentences = []
     for words in results:
-        words = words.replace('[MASK] ', '')
+        # words = words.replace('[MASK] ', '')
         words = words.replace(' - ', '-').replace(' . ', '.').replace(' / ', '/')
         sentences.append(words.strip())
 

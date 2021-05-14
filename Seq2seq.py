@@ -240,13 +240,12 @@ class DecoderRNN(BaseRNN):
             if self.use_attention:
                 ret_dict[DecoderRNN.KEY_ATTN_SCORE].append(step_attn)
             symbols = decoder_outputs[-1].topk(1)[1]
-            sequence_symbols.append(symbols)
 
             eos_batches = symbols.data.eq(self.eos_id)
             if eos_batches.dim() > 0:
                 eos_batches = eos_batches.cpu().view(-1).numpy()
                 update_idx = ((lengths > step) & eos_batches) != 0
-                lengths[update_idx] = len(sequence_symbols)
+                lengths[update_idx] = len(sequence_symbols) + 1
             return symbols
 
         if training:
@@ -263,7 +262,8 @@ class DecoderRNN(BaseRNN):
                         step_attn = attn[:, di, :]
                     else:
                         step_attn = None
-                    decode(di, step_output, step_attn)
+                    symbols = decode(di, step_output, step_attn)
+                    sequence_symbols.append(symbols)
             else:
                 decoder_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):
@@ -272,12 +272,14 @@ class DecoderRNN(BaseRNN):
                                                                                   function=function)
                     step_output = decoder_output[:, 0, :]
                     symbols = decode(di, step_output, step_attn)
+                    sequence_symbols.append(symbols)
                     decoder_input = symbols
         else:
             decoder_input = inputs[:, 0].unsqueeze(1)
             decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                           encoder_outputs,
                                                                           function=function)
+            decoder_output_pre = None
             sid = 1
             generation_state = False
             # 小于最大长度且没有生成终结符就继续
@@ -287,6 +289,7 @@ class DecoderRNN(BaseRNN):
 
                 if not generation_state:
                     decoder_input = inputs[:, sid].unsqueeze(1)
+                    decoder_output_pre = decoder_output.clone()
                     decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                   encoder_outputs,
                                                                                   function=function)
@@ -294,16 +297,23 @@ class DecoderRNN(BaseRNN):
                         sequence_symbols.append(decoder_input)
                     sid += 1
                 else:
-                    step_output = decoder_output[:, 0, :]
+                    if decoder_output_pre is None:
+                        step_output = decoder_output[:, 0, :]
+                    else:
+                        step_output = decoder_output_pre[:, 0, :]
+
                     symbols = decode(0, step_output, step_attn)
                     decoder_input = symbols
                     di = 1
                     while di==1 or (di < 20 and symbols[0][0] != 4):
+                        decoder_output_pre = decoder_output.clone()
                         decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                       encoder_outputs,
                                                                                       function=function)
                         step_output = decoder_output.squeeze(1)
                         symbols = decode(di, step_output, step_attn)
+                        if symbols[0][0] != 4:
+                            sequence_symbols.append(symbols)
                         decoder_input = symbols
                         di += 1
                     sid += 1
