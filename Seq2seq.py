@@ -216,7 +216,7 @@ class DecoderRNN(BaseRNN):
         return predicted_softmax, hidden, attn
 
     def forward(self, inputs=None, encoder_hidden=None, encoder_outputs=None,
-                function=F.log_softmax, teacher_forcing_ratio=0):
+                function=F.log_softmax, teacher_forcing_ratio=0, training=True):
         ret_dict = dict()
         if self.use_attention:
             ret_dict[DecoderRNN.KEY_ATTN_SCORE] = list()
@@ -249,30 +249,67 @@ class DecoderRNN(BaseRNN):
                 lengths[update_idx] = len(sequence_symbols)
             return symbols
 
-        # Manual unrolling is used to support random teacher forcing.
-        # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
-        if use_teacher_forcing:
-            decoder_input = inputs[:, :-1]
-            decoder_output, decoder_hidden, attn = self.forward_step(decoder_input, decoder_hidden, encoder_outputs,
-                                                                     function=function)
+        if training:
+            # Manual unrolling is used to support random teacher forcing.
+            # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
+            if use_teacher_forcing:
+                decoder_input = inputs[:, :-1]
+                decoder_output, decoder_hidden, attn = self.forward_step(decoder_input, decoder_hidden, encoder_outputs,
+                                                                         function=function)
 
-            for di in range(decoder_output.size(1)):
-                step_output = decoder_output[:, di, :]
-                if attn is not None:
-                    step_attn = attn[:, di, :]
-                else:
-                    step_attn = None
-                decode(di, step_output, step_attn)
+                for di in range(decoder_output.size(1)):
+                    step_output = decoder_output[:, di, :]
+                    if attn is not None:
+                        step_attn = attn[:, di, :]
+                    else:
+                        step_attn = None
+                    decode(di, step_output, step_attn)
+            else:
+                decoder_input = inputs[:, 0].unsqueeze(1)
+                for di in range(max_length):
+                    decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
+                                                                                  encoder_outputs,
+                                                                                  function=function)
+                    step_output = decoder_output[:, 0, :]
+                    symbols = decode(di, step_output, step_attn)
+                    decoder_input = symbols
         else:
             decoder_input = inputs[:, 0].unsqueeze(1)
-            for di in range(max_length):
-                decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
-                                                                              encoder_outputs,
-                                                                              function=function)
-                # step_output = decoder_output.squeeze(1)
-                step_output = decoder_output[:, 0, :]
-                symbols = decode(di, step_output, step_attn)
-                decoder_input = symbols
+            decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
+                                                                          encoder_outputs,
+                                                                          function=function)
+            sid = 1
+            generation_state = False
+            # 小于最大长度且没有生成终结符就继续
+            while sid < inputs.shape[1]:
+                if inputs[0][sid] == 4:
+                    generation_state = not generation_state
+
+                if not generation_state:
+                    decoder_input = inputs[:, sid].unsqueeze(1)
+                    decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
+                                                                                  encoder_outputs,
+                                                                                  function=function)
+                    if inputs[0][sid] != 4:
+                        sequence_symbols.append(decoder_input)
+                    sid += 1
+                else:
+                    step_output = decoder_output[:, 0, :]
+                    symbols = decode(0, step_output, step_attn)
+                    decoder_input = symbols
+                    di = 1
+                    while di==1 or (di < 20 and symbols[0][0] != 4):
+                        decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
+                                                                                      encoder_outputs,
+                                                                                      function=function)
+                        step_output = decoder_output.squeeze(1)
+                        symbols = decode(di, step_output, step_attn)
+                        decoder_input = symbols
+                        di += 1
+                    sid += 1
+                    while sid < inputs.shape[1] and inputs[0, sid] != 4:
+                        sid += 1
+
 
         ret_dict[DecoderRNN.KEY_SEQUENCE] = sequence_symbols
         ret_dict[DecoderRNN.KEY_LENGTH] = lengths.tolist()
@@ -372,7 +409,7 @@ class Seq2seq(nn.Module):
         self.decoder.rnn.flatten_parameters()
 
     def forward(self, batch_src, batch_tar=None,
-                teacher_forcing_ratio=0):
+                teacher_forcing_ratio=0, training=True):
 
         encoder_outputs, encoder_hidden = self.encoder(batch_src)
 
@@ -383,5 +420,6 @@ class Seq2seq(nn.Module):
                               # encoder_outputs=combined_embeddings,
                               encoder_outputs = encoder_outputs,
                               function=self.decode_function,
-                              teacher_forcing_ratio=teacher_forcing_ratio)
+                              teacher_forcing_ratio=teacher_forcing_ratio,
+                              training=training)
         return result

@@ -19,7 +19,7 @@ class DCMN_Config():
         self.output_file = 'output_test.txt'
 
         self.max_seq_length = 64
-        self.batch_size = 12
+        self.batch_size = 1
         self.num_choices = 8
         self.learning_rate = 5e-5
         self.dcmn_learning_rate = 1e-5
