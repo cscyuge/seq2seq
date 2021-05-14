@@ -280,6 +280,7 @@ class DecoderRNN(BaseRNN):
                                                                           encoder_outputs,
                                                                           function=function)
             decoder_output_pre = None
+            step_attn_pre = None
             sid = 1
             generation_state = False
             # 小于最大长度且没有生成终结符就继续
@@ -288,8 +289,12 @@ class DecoderRNN(BaseRNN):
                     generation_state = not generation_state
 
                 if not generation_state:
-                    decoder_input = inputs[:, sid].unsqueeze(1)
+                    if inputs[0][sid] == 4:
+                        decoder_input = decode(0, decoder_output_pre[:, 0, :], step_attn_pre)
+                    else:
+                        decoder_input = inputs[:, sid].unsqueeze(1)
                     decoder_output_pre = decoder_output.clone()
+                    step_attn_pre = step_attn.clone()
                     decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                   encoder_outputs,
                                                                                   function=function)
@@ -301,12 +306,15 @@ class DecoderRNN(BaseRNN):
                         step_output = decoder_output[:, 0, :]
                     else:
                         step_output = decoder_output_pre[:, 0, :]
+                        step_attn = step_attn_pre
 
                     symbols = decode(0, step_output, step_attn)
+
                     decoder_input = symbols
                     di = 1
-                    while di==1 or (di < 20 and symbols[0][0] != 4):
+                    while di<=2 or (di < 20 and symbols[0][0] != 4):
                         decoder_output_pre = decoder_output.clone()
+                        step_attn_pre = step_attn.clone()
                         decoder_output, decoder_hidden, step_attn = self.forward_step(decoder_input, decoder_hidden,
                                                                                       encoder_outputs,
                                                                                       function=function)

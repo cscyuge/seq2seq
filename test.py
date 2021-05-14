@@ -25,7 +25,7 @@ def main():
     dcmn.eval()
     seq2seq.eval()
 
-    # src = 'a'
+    # src = '[CLS] [MASK] computed tomography [MASK] showed [MASK] patient [MASK] was [MASK] fine [MASK] . [SEP]'
     # src_ids, src_masks = seq_tokenize([src], config)
     # decoder_outputs, decoder_hidden, ret_dict = seq2seq([src_ids, src_masks], src_ids, 0.0, False)
     # symbols = ret_dict['sequence']
